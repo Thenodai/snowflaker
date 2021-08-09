@@ -11,9 +11,9 @@ class Snowflake {
         return this.particles;
     }
 
-    show() {
+    show(p5) {
         for (let i = 0; i < this.particles.length; i++) {
-            this.particles[i].show();
+            this.particles[i].show(p5);
         }
     }
 }
