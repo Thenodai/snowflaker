@@ -1,47 +1,65 @@
-import React from 'react';
-import Sketch from 'react-p5';
-import p5Types, { Vector } from 'p5';
-import Line from './Line';
-import { generateSnowflake } from './generator';
+import React  from 'react'
+import Sketch from 'react-p5'
+import p5Types from 'p5'
+import Line from './Line'
+import { generateSnowflake } from './service/generator'
 
 const KochSnowflake = () => {
-    let flake: Array<Line> = [];
-    const setup = (p5: p5Types, canvasParentRef: any) => {
-        p5.createCanvas(600, 800).parent(canvasParentRef);
-        p5.fill(255);
+  let flake: Line[] = []
+  let depth: number = 0
+  let sideLength: number = 300;
 
-        const a = p5.createVector(0, 600);
-        const b = p5.createVector(600, 600);
-        const c = p5.createVector(300, 300);
+  const setup = (p5: p5Types, canvasParentRef: any) => {
+    p5.createCanvas(600, 600).parent(canvasParentRef)
+    p5.fill(255)
 
-        const d = new Line(p5, a, b);
-        const e = new Line(p5, a, c);
-        flake.push(d);
-        flake.push(e);
+    const h = sideLength * (3 ** 0.5) / 2;
 
-        addEventListener('mousedown', () => generate(p5));
-    };
+    const a = p5.createVector(-sideLength / 2 , h)
+    const b = p5.createVector(sideLength / 2 , h)
+    const c = p5.createVector(0, 0)
 
-    const generate = (p5: any) => {
-        const nextGeneration: Array<Line> = [];
+    const bottom = new Line(b, a)
+    const left = new Line(a, c)
+    const right = new Line(c, b)
+    flake.push(bottom);
+    flake.push(left)
+    flake.push(right);
 
-        for (let i = 0; i < flake.length; i++) {
-            generateSnowflake(p5, flake[i], nextGeneration);
-        }
+    addEventListener('mousedown', () => generate(p5))
+  }
 
-        flake = nextGeneration;
-    };
+  const generate = (p5: any) => {
+    if (depth > 5) {
+      return
+    }
+    const nextGeneration: Array<Line> = []
 
-    const draw = (p5: p5Types) => {
+    for (let i = 0; i < flake.length; i++) {
+      generateSnowflake(p5, flake[i], nextGeneration)
+    }
+    depth++
 
-        for (let i = 0; i < flake.length; i++) {
-            flake[i].draw();
-        }
-    };
+    flake = nextGeneration
+  }
 
-    return (
-        <Sketch setup={setup} draw={draw} />
-    )
-};
+  const draw = (p5: p5Types) => {
+    p5.translate(300, 100)
 
-export default KochSnowflake;
+    p5.push()
+    p5.beginShape();
+    for (let i = 0; i < flake.length; i++) {
+      const line = flake[i]
+      p5.vertex(line.startVector.x, line.startVector.y)
+      p5.vertex(line.endVector.x, line.endVector.y)
+    }
+    p5.endShape();
+    p5.pop()
+  }
+
+  return (
+    <Sketch setup={setup} draw={draw} />
+  )
+}
+
+export default KochSnowflake

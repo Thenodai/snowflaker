@@ -1,19 +1,13 @@
-import p5Types, {Vector} from "p5";
+import p5Types from 'p5'
 
 class Line {
-    private p5: any;
-    private startVector: any;
-    private endVector: any;
+  public startVector: p5Types.Vector
+  public endVector: p5Types.Vector
 
-    constructor(p5: any, startVector: any, endVector: any) {
-        this.p5 = p5;
-        this.startVector = startVector;
-        this.endVector = endVector;
-    }
-
-    draw = () => {
-        this.p5.line(this.startVector.x, this.startVector.y, this.endVector.x, this.endVector.y);
-    }
+  constructor(startVector: p5Types.Vector, endVector: p5Types.Vector) {
+    this.startVector = startVector
+    this.endVector = endVector
+  }
 }
 
-export default Line;
+export default Line
