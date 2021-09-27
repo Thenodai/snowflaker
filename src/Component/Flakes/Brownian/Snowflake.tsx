@@ -1,20 +1,27 @@
 import React from 'react';
-import Sketch from "react-p5";
+import Sketch from 'react-p5';
 import p5Types from 'p5';
-import {DEFAULT_PARTICLE_RADIUS, HEIGHT, WIDTH} from "../../../config/constants";
-import Snowflake from "../../../Snowflake";
-import Particle from "../../../Particle";
-import intersects from "../../../service/intersects";
+import { HEIGHT, WIDTH } from './config/constants';
+import Particle, { IParticle } from './Particle';
+import { intersects, snow, update } from './service/manager';
+
+class P5 {
+    static internal: p5Types;
+    constructor(p5: p5Types) {
+        P5.internal = p5;
+    }
+    static getP5 = () => P5.internal;
+}
 
 const BrownianSnowflake = () => {
     let currentParticle: any;
-    let snowflake: any;
+    let snowflake: IParticle[] = [];
     const setup = (p5: p5Types, canvasParentRef: any) => {
+        new P5(p5);
         p5.createCanvas(WIDTH, HEIGHT).parent(canvasParentRef);
         p5.fill(255);
 
-        snowflake = new Snowflake();
-        currentParticle = new Particle(WIDTH / 2, 0, DEFAULT_PARTICLE_RADIUS);
+        currentParticle = new Particle(p5.createVector(WIDTH / 2, 0));
     };
 
     const draw = (p5: p5Types) => {
@@ -23,24 +30,24 @@ const BrownianSnowflake = () => {
         p5.background(0);
         let updated = false;
 
-        while (!currentParticle.isFinished() && !intersects(currentParticle, snowflake, p5)) {
-            currentParticle.update(p5);
+        while (!currentParticle.isFinished() && !intersects(currentParticle, snowflake)) {
+            update(currentParticle);
             updated = true;
         }
         if (!updated) {
             p5.noLoop();
         }
 
-        snowflake.addParticle(currentParticle);
-        currentParticle = new Particle(WIDTH / 2, 0, 3);
+        snowflake.push(currentParticle);
+        currentParticle = new Particle(p5.createVector(WIDTH / 2, 0));
 
         for (let k = 0; k < 6; k++) {
             p5.rotate(p5.PI/3);
-            snowflake.show(p5);
+            snow(snowflake);
 
             p5.push();
             p5.scale(1, -1);
-            snowflake.show(p5);
+            snow(snowflake)
             p5.pop();
         }
     };
@@ -48,5 +55,6 @@ const BrownianSnowflake = () => {
         <Sketch setup={setup} draw={draw} />
     )
 };
+export { P5 };
 
 export default BrownianSnowflake;
