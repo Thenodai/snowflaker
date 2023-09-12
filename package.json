@@ -25,6 +25,7 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
     "loader-utils": "^2.0.0",
+    "open-simplex-noise": "^2.5.0",
     "p5": "^1.0.0",
     "p5.js-svg": "^1.1.1",
     "react": "^17.0.2",

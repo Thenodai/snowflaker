@@ -7,7 +7,7 @@ import {Grid, AppBar} from "@material-ui/core";
 const App = () => {
     return (
     <BrowserRouter>
-        <AppBar color="secondary">
+        <AppBar color="secondary" position="sticky">
             <Grid container justifyContent={"center"} >
                 <Menu />
             </Grid>
